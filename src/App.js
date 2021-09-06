@@ -1,17 +1,17 @@
 import { BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import Footer from './Components/Footer';
 import Header from './Components/Header';
-import FunctionDetail from './FunctionDetail';
+// import FunctionDetail from './FunctionDetail';
 import Home from './Home';
 function App() {
   return (
 
     <Router >
-      <div className="App">
+      <div className="App bg-gray-50">
       <Header/>
 
 
-      <div className="max-w-5xl mx-auto mt-10">
+      <div className="max-w-5xl mx-auto mt-5 bg-gray-50">
         <Switch>
           {/* Only one route shows at one time */}
           <Route exact path="/">

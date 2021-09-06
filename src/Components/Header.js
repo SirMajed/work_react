@@ -23,20 +23,21 @@ class Header extends Component {
                             </div>
                             <div className="hidden md:flex items-center space-x-1">
                                 {/* py-4 px-2 text-indigo-500 border-b-4 border-indigo-500 font-semibold */}
-                                <Link to="/" className="py-2 px-2 text-indigo-500 border-b-2 border-indigo-500 font-semibold ">Home </Link>
+                                <Link to="/" className="py-2 px-2 text-indigo-800 border-b-2 border-indigo-800 font-semibold ">Home </Link>
                                 {/* <a href="" className="py-4 px-2 text-gray-500 font-semibold hover:text-indigo-500 transition duration-300">Services</a> */}
                                 {/* <a href="" className="py-4 px-2 text-gray-500 font-semibold hover:text-indigo-500 transition duration-300">About</a> */}
                                 {/* <a href="" className="py-4 px-2 text-gray-500 font-semibold hover:text-indigo-500 transition duration-300">Contact Us</a> */}
                             </div>
                         </div>
-                        <div className="hidden md:flex items-center space-x-3 ">
-                            {/* <a href="" className="py-2 px-2 font-medium text-gray-500 rounded hover:bg-indigo-500 hover:text-white transition duration-300">Log In</a> */}
+                        {/* <div className="hidden md:flex items-center space-x-3 ">
+                            <a href="" className="py-2 px-2 font-medium text-gray-500 rounded hover:bg-indigo-500 hover:text-white transition duration-300">Log In</a>
                             <a href="" className="py-2 px-2 font-medium text-white bg-indigo-500 rounded hover:bg-indigo-600 transition duration-300">Call to action</a>
-                        </div>
+                        </div> */}
+                        
                         {/* Beloow is for the menu button for mobile */}
                         <div className="md:hidden flex items-center">
                             <button className="outline-none mobile-menu-button">
-                            <svg className=" w-6 h-6 text-gray-500 hover:text-indigo-500 "
+                            <svg className=" w-6 h-6 text-gray-500 hover:text-indigo-800 "
                                 x-show="!showMenu"
                                 fill="none"
                                 stroke-linecap="round"
@@ -53,7 +54,7 @@ class Header extends Component {
 
                 <div className="hidden mobile-menu">
                     <ul className="">
-                        <li className="active"><a href="index.html" className="block text-sm px-2 py-4 text-white bg-indigo-500 font-semibold">Home</a></li>
+                        <li className="active"><a href="index.html" className="block text-sm px-2 py-4 text-white bg-indigo-800 font-semibold">Home</a></li>
                         {/* <li><a href="#services" className="block text-sm px-2 py-4 hover:bg-indigo-500 transition duration-300">Services</a></li> */}
                         {/* <li><a href="#about" className="block text-sm px-2 py-4 hover:bg-indigo-500 transition duration-300">About</a></li> */}
                         {/* <li><a href="#contact" className="block text-sm px-2 py-4 hover:bg-indigo-500 transition duration-300">Contact Us</a></li> */}

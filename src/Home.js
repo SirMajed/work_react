@@ -1,25 +1,23 @@
 import { useState } from "react";
 import axios from "axios";
-import { InputLabel, MenuItem, Select } from "@material-ui/core";
-// import Card from "./Components/Card";
+import { InputLabel, MenuItem, Select, CircularProgress, FormControl } from "@material-ui/core";
+import MyAlert from "./Components/MyAlert";
 import { Button } from "@material-ui/core";
+import { useSelector } from "react-redux";
+import SendIcon from '@material-ui/icons/Send';
+import { CloudUpload } from "@material-ui/icons";
 const Home = () => {
   const [selectedFile, setSelectedFile] = useState("");
   const [selectedFunction, setSelectedFunction] = useState("");
-
-  //   const [functions, setFunctions] = useState(null);
-  //   useEffect(() => {
-  //     fetch("https://retoolapi.dev/trLdZc/data")
-  //       .then((res) => {
-  //         return res.json();
-  //       })
-  //       .then((data) => {
-  //         setFunctions(data);
-  //       });
-  //   }, []);
+  const [isDisabled, setIsDisabled] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [response, setResponse] = useState(null);
+  
+  const state = useSelector((state)=> state.account);
 
   const handleChange = (file) => {
     setSelectedFile(file[0]);
+    setIsDisabled(false);
   };
 
   const handleDropDown = (d)=>{
@@ -29,48 +27,47 @@ const Home = () => {
 
   // The followin method wll upload the files to server
   const submitFile = (e) => {
-    const data = {
-      'functionName': selectedFunction,
-      'fileName': selectedFile.name
-  }
-    e.preventDefault();
-    // const fData = new FormData();
-    // fData.append("file", selectedFile);
-    axios.post("http://127.0.0.1:8000/api/function", data).then((res) => {
-      console.log("RESPONSE -->> ", res);
-    });
+    setIsLoading(true);
+      const data = {
+        'functionName': selectedFunction,
+        'fileName': selectedFile.name,
+        'file': selectedFile
+    }
+      e.preventDefault();
+      setIsLoading(true);
+
+      // const fData = new FormData();
+      // fData.append("file", selectedFile);
+      axios.post("http://127.0.0.1:8000/api/function", data).then((res) => {
+        return res;  
+      // console.log("Server Says: ", res);
+      }).then((data)=>{
+
+        setResponse(data);
+        console.log(data);
+      });
+      setIsLoading(false);
+
   };
 
-  // const fileHandler = (e)=>{
-  //     // console.log(e.target.files[0]);
-  //     setSelectedFile(e.target.files[0]);
-  //     console.log(selectedFile);
-  // }
-
-  // const uploadHandler = ()=>{
-  //     const fData = new FormData();
-  //     fData.append('function', selectedFile);
-  //     axios.post('http://127.0.0.1:8000/api/function', fData)
-  //     .then(res => {
-  //       console.log('RESPONSE -->> ', res);
-  //     });
-
-  // }
 
   return (
-    <div className="App scrollbar-none flex flex-col font-sans mx-auto p-5 md:p-0">
+    <div className="App scrollbar-none flex flex-col font-sans mx-auto p-5 md:p-0 ">
+      <div className="bg-white shadow-md w-full md:w-5/6 rounded-lg text-center text-justify mx-auto px-8 py-6">
       <div className="first">
         <h1 className="text-gray-600 text-3xl font-bold ">1. Select function</h1>
-        <br />
-        <InputLabel className="w-3/4" id="label">
-          Function
-        </InputLabel>
-        <Select onChange={(e) => handleDropDown(e.target.value)}  name="selectedFunction" style={{width: '200px'}}   >
+
+        <FormControl  className="text-left">
+        <InputLabel >Select</InputLabel>
+
+        <Select  onChange={(e) => handleDropDown(e.target.value)}  name="selectedFunction" style={{width: '200px'}}   >
           <MenuItem value="Fun1">Fun1</MenuItem>
           <MenuItem value="Fun2">Fun2</MenuItem>
           <MenuItem value="Fun3">Fun3</MenuItem>
           <MenuItem value="Fun4">Fun4</MenuItem>
         </Select>
+        </FormControl>
+
         <hr className="mt-5 mb-2" />
       </div>
       {/* <div className="mx-auto grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 pt-6 gap-8">
@@ -80,41 +77,48 @@ const Home = () => {
             ))
         }
         </div> */}
-        <div className="second">
+
+
+        <div className="second ">
         <h1 className="text-gray-600 text-3xl font-bold ">2. Choose file</h1>
 
         <br />
-        <form onSubmit={submitFile}>
-        <Button variant="contained" component="label">
-          Choose File
+        <form>
+        <Button startIcon={<CloudUpload/>}  variant="contained" component="label">
+          {selectedFile.name ?? 'Choose File'}
           <input
             type="file"
             hidden
+            
             // value={selectedFile}
             name="file"
             onChange={(e) => handleChange(e.target.files)}
           />
         </Button>
+      {/* <p className="mt-1">{selectedFile.name}</p> */}
       </form>
       <hr className="mt-5 mb-2" />
 
       </div>
-      {/* <span className="ml-2 mr-2">{selectedFile}</span> */}
+
+
       <div className="third">
       <h1 className="text-gray-600 text-3xl font-bold ">3. Upload your file</h1>
       <div className="mt-5">
-        <Button
-          onClick={submitFile}
-          variant="contained"
-          color="primary"
-          component="label"
-        >
-          Upload to server
-        </Button>
+        {isLoading ? <CircularProgress /> : <Button startIcon={<SendIcon/>} disabled={isDisabled} onClick={submitFile} variant="contained" color="primary" component="label" > Upload to server </Button>}
+      </div>
       </div>
 
       </div>
 
+        <div className="response mt-10 mx-auto bg-white shadow-md rounded-lg px-4 py-4 w-full md:w-5/6">
+        <h1 className="text-gray-600 text-3xl font-bold mt-2 mb-2">Response:</h1>
+        {response && 
+        <div>
+        <MyAlert message={response.data.msg + ' - File: ' + response.data.fileName + " - Function: " + response.data.functionName} type="success" />
+        </div>
+        }
+        </div>
     </div>
   );
 };
