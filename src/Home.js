@@ -114,14 +114,16 @@ const Home = () => {
 
       </div>
 
-        <div className="response mt-10 mx-auto bg-white shadow-md rounded-lg px-4 py-4 w-full md:w-5/6">
+      {response && <div className="response mt-10 mx-auto bg-white shadow-md rounded-lg px-4 py-4 w-full md:w-5/6">
         <h1 className="text-gray-600 text-3xl font-bold mt-2 mb-2">Response:</h1>
-        {response && 
+        
         <div>
+          {/* Todo: add Error Alert */}
         <MyAlert message={response.data.msg + ' - File: ' + response.data.fileName + " - Function: " + response.data.functionName} type="success" />
         </div>
-        }
-        </div>
+        
+        
+        </div>}
     </div>
   );
 };
