@@ -27,38 +27,41 @@ const Home = () => {
 
   // The followin method wll upload the files to server
   const submitFile = (e) => {
+    e.preventDefault();
+
     setIsLoading(true);
+
       const data = {
         'functionName': selectedFunction,
         'fileName': selectedFile.name,
         'file': selectedFile
     }
-      e.preventDefault();
       setIsLoading(true);
 
       // const fData = new FormData();
       // fData.append("file", selectedFile);
-      axios.post("http://127.0.0.1:8000/api/function", data).then((res) => {
-        return res;  
+      axios.post("http://127.0.0.1:8000/api/function", data)
+      .then((res) => {
+       return res;  
       // console.log("Server Says: ", res);
       }).then((data)=>{
 
         setResponse(data);
+        setIsLoading(false);
         console.log(data);
       });
-      setIsLoading(false);
 
   };
 
 
   return (
     <div className="App scrollbar-none flex flex-col font-sans mx-auto p-5 md:p-0 ">
-      <div className="bg-white shadow-md w-full md:w-5/6 rounded-lg text-center text-justify mx-auto px-8 py-6">
+      <div className="bg-white shadow-md w-full md:w-5/6 rounded-lg text-center text-justify mx-auto px-4 md:px-8 py-6">
       <div className="first">
-        <h1 className="text-gray-600 text-3xl font-bold ">1. Select function</h1>
+        <h1 className="text-gray-600 text-3xl font-bold">1. Select function</h1>
 
-        <FormControl  className="text-left">
-        <InputLabel >Select</InputLabel>
+        <FormControl  className="text-left ">
+        <InputLabel className="mt-1" >Select</InputLabel>
 
         <Select  onChange={(e) => handleDropDown(e.target.value)}  name="selectedFunction" style={{width: '200px'}}   >
           <MenuItem value="Fun1">Fun1</MenuItem>
