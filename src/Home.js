@@ -39,9 +39,10 @@ const Home = () => {
 
     if(result.status === 404){
       setError(result.statusText);
+    } else {
+      setResponse(result);
     }
 
-    setResponse(result);
     setIsLoading(false);
     
     console.log(result);
