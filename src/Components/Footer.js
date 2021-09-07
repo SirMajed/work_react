@@ -1,8 +1,8 @@
 import { FunctionsOutlined } from "@material-ui/icons";
 const Footer = () => {
     return (
-            <div className="pb-6">
-                <div className="mx-auto container pt-0 lg:pt-72 flex flex-col items-center justify-center">
+            <div className="pb-6 ">
+                <div className="mx-auto container pt-0 lg:pt-72 flex flex-col items-center justify-center ">
                    
                     <div className="w-9/12  h-0.5 bg-gray-50 rounded-full" />
                     <div className="flex justify-between items-center">

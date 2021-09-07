@@ -1,19 +1,20 @@
 import { useState } from "react";
-import axios from "axios";
-import { InputLabel, MenuItem, Select, CircularProgress, FormControl } from "@material-ui/core";
+import { InputLabel, MenuItem, Select, CircularProgress, FormControl, Tooltip } from "@material-ui/core";
 import MyAlert from "./Components/MyAlert";
 import { Button } from "@material-ui/core";
-import { useSelector } from "react-redux";
 import SendIcon from '@material-ui/icons/Send';
 import { CloudUpload } from "@material-ui/icons";
+import ResponseCard from "./Components/ResponseCard";
+import { Link } from "react-router-dom";
+import { qfuntion } from "./Data/QFuntions";
 const Home = () => {
   const [selectedFile, setSelectedFile] = useState("");
   const [selectedFunction, setSelectedFunction] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState(null);
-  
-  const state = useSelector((state)=> state.account);
+  const [error, setError] = useState(null);
+  // const state = useSelector((state)=> state.account);
 
   const handleChange = (file) => {
     setSelectedFile(file[0]);
@@ -26,30 +27,24 @@ const Home = () => {
 
 
   // The followin method wll upload the files to server
-  const submitFile = (e) => {
-    e.preventDefault();
-
+  const submitFile = async () => {
+    
     setIsLoading(true);
-
       const data = {
-        'functionName': selectedFunction,
-        'fileName': selectedFile.name,
-        'file': selectedFile
+        functionName:selectedFunction,
+        fileName: selectedFile.name
+      };
+    
+    const result = await qfuntion(data);
+
+    if(result.status === 404){
+      setError(result.statusText);
     }
-      setIsLoading(true);
 
-      // const fData = new FormData();
-      // fData.append("file", selectedFile);
-      axios.post("http://127.0.0.1:8000/api/function", data)
-      .then((res) => {
-       return res;  
-      // console.log("Server Says: ", res);
-      }).then((data)=>{
-
-        setResponse(data);
-        setIsLoading(false);
-        console.log(data);
-      });
+    setResponse(result);
+    setIsLoading(false);
+    
+    console.log(result);
 
   };
 
@@ -60,16 +55,17 @@ const Home = () => {
       <div className="first">
         <h1 className="text-gray-600 text-3xl font-bold">1. Select function</h1>
 
+        <Tooltip title="Select which function you want to perform">
         <FormControl  className="text-left ">
         <InputLabel className="mt-1" >Select</InputLabel>
-
-        <Select  onChange={(e) => handleDropDown(e.target.value)}  name="selectedFunction" style={{width: '200px'}}   >
+        <Select value={selectedFunction} onChange={(e) => handleDropDown(e.target.value)}  style={{width: '200px'}}   >
           <MenuItem value="Fun1">Fun1</MenuItem>
           <MenuItem value="Fun2">Fun2</MenuItem>
           <MenuItem value="Fun3">Fun3</MenuItem>
           <MenuItem value="Fun4">Fun4</MenuItem>
         </Select>
         </FormControl>
+        </Tooltip>
 
         <hr className="mt-5 mb-2" />
       </div>
@@ -87,6 +83,7 @@ const Home = () => {
 
         <br />
         <form>
+          <Tooltip title="Select the function file from your device">
         <Button startIcon={<CloudUpload/>}  variant="contained" component="label">
           {selectedFile.name ?? 'Choose File'}
           <input
@@ -98,6 +95,7 @@ const Home = () => {
             onChange={(e) => handleChange(e.target.files)}
           />
         </Button>
+        </Tooltip>
       {/* <p className="mt-1">{selectedFile.name}</p> */}
       </form>
       <hr className="mt-5 mb-2" />
@@ -108,23 +106,40 @@ const Home = () => {
       <div className="third">
       <h1 className="text-gray-600 text-3xl font-bold ">3. Upload your file</h1>
       <div className="mt-5">
-        {isLoading ? <CircularProgress /> : <Button startIcon={<SendIcon/>} disabled={isDisabled} onClick={submitFile} variant="contained" color="primary" component="label" > Upload to server </Button>}
+        {
+        isLoading ? <CircularProgress /> :
+        <Tooltip title="Send the function file to the server and wait for the response">
+        <Button startIcon={<SendIcon/>} disabled={isDisabled} onClick={submitFile} variant="contained" color="primary" component="label" >
+          Upload to server
+          </Button>
+          </Tooltip>
+        }
       </div>
       </div>
 
       </div>
+      <div className="flex justify-end mt-3 md:w-5/6 rounded-lg text-center text-justify mx-2 md:mx-auto">
+      <Link to="/test">
+      <Button
+        variant="contained"
+        color="primary"
+        endIcon={<SendIcon/>}>
+        Next
+      </Button>
+      </Link>
+      </div>
 
-      {response && <div className="response mt-10 mx-auto bg-white shadow-md rounded-lg px-4 py-4 w-full md:w-5/6">
-        <h1 className="text-gray-600 text-3xl font-bold mt-2 mb-2">Response:</h1>
+        {error && <ResponseCard>
+          <div><MyAlert type="error" color="error" message={error}/></div>
+          </ResponseCard>}
         
-        <div>
-          {/* Todo: add Error Alert */}
-        <MyAlert message={response.data.msg + ' - File: ' + response.data.fileName + " - Function: " + response.data.functionName} type="success" />
+        {response && <ResponseCard>
+          <div><MyAlert type="success"  color="info" message={response.data.msg}/></div>
+
+          </ResponseCard>}
+        
+        
         </div>
-        
-        
-        </div>}
-    </div>
   );
 };
 

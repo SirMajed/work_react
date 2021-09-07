@@ -3,6 +3,7 @@ import Footer from './Components/Footer';
 import Header from './Components/Header';
 // import FunctionDetail from './FunctionDetail';
 import Home from './Home';
+import Test from './Test';
 function App() {
   return (
 
@@ -16,6 +17,10 @@ function App() {
           {/* Only one route shows at one time */}
           <Route exact path="/">
           <Home/>
+          </Route>
+
+          <Route exact path="/test">
+          <Test/>
           </Route>
 {/* 
           <Route exact path="/functions/:id">
