@@ -7,8 +7,10 @@ import UploadFunction from "./Components/UploadFunction";
 import SendFunction from "./Components/SendFunction";
 import SelectFunctionHook from "./Components/SelectFunctionHook";
 import SelectFileHook from "./Components/SelectFileHook";
-
+import { useSelector } from "react-redux";
 const Home = () => {
+  const counter = useSelector(state => state.counter);
+
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
@@ -27,8 +29,11 @@ const Home = () => {
     const result = await qfuntion(data);
 
     if(result.status !== 200){
-      setError(result.statusText);
-    } else {
+      setError(result.status + ", " + result.statusText);
+    } else if (result.data === null){
+      setError("Null, the server didnt send anything");
+    }
+    else {
       setResponse(result);
     }
 
@@ -59,8 +64,7 @@ const Home = () => {
         {response && <ResponseCard>
           <div><MyAlert type="success"  color="info" message={response.statusText + ", "+ response.data.msg}/></div>
           </ResponseCard>}
-        
-        
+                
         </div>
   );
 };

@@ -1,6 +1,6 @@
 import client from "./Client";
 
-const uri = "/api/functiosn"; 
+const uri = "/api/function"; 
 
 const qfuntion = async (data) => {
     if (data === null) {
