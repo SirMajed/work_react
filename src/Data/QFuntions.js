@@ -7,6 +7,8 @@ const qfuntion = async (data) => {
         return "Data is null"; 
     }
     try {
+        // const dataString = JSON.stringify(data);
+        //{"body":data}
         const result = await client.post(uri, data);
         return result;
 
