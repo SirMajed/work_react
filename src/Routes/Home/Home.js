@@ -1,53 +1,71 @@
 import { useState } from 'react';
 import MyAlert from '../../Components/MyAlert';
 import ResponseCard from './Components/ResponseCard';
-import { qfuntion } from '../../Data/QFuntions';
 import SelectFunction from './Components/SelectFunction';
 import UploadFunction from './Components/UploadFunction';
 import SendFunction from './Components/SendFunction';
 import SelectFunctionHook from './Components/SelectFunctionHook';
 import SelectFileHook from './Components/SelectFileHook';
-// import { useSelector } from "react-redux";
-// import ReCAPTCHA from "react-google-recaptcha";
+
 import axios from 'axios';
 
 const Home = () => {
-  // const counter = useSelector(state => state.counter);
-
   const [isLoading, setIsLoading] = useState(false);
-  const [response, setResponse] = useState(null);
-  const [error, setError] = useState(null);
+  const [response, setResponse] = useState(undefined);
+  const [error, setError] = useState('');
 
   const { selectedFunction, handleDropDown } = SelectFunctionHook();
-  const { selectedFile, handleChange, isDisabled, disableBtn } = SelectFileHook();
+  const { selectedFile, handleChange, isDisabled } = SelectFileHook();
 
   const cancelTokenSource = axios.CancelToken.source();
-  const submitFile = async () => {
+  const url = process.env.REACT_APP_SERVER_ENDPOINT;
 
+  const data = {
+    functionName: selectedFunction,
+    fileName: selectedFile.name,
+  };
+
+  const submitFile = async () => {
+    setError('');
+    setResponse(undefined);
     setIsLoading(true);
 
-    const data = {
-      functionName: selectedFunction,
-      fileName: selectedFile.name,
-    };
-
-
-      const result = await qfuntion(data, cancelTokenSource);
-      console.log(result);
-      if (result.status !== 200) {
-        setError(result.statusText);
-      } else if (result.data === null) {
-        setError('Null, the server didnt send anything');
-      } else {
-        setResponse(result);
+    try {
+      if (data.fileName === undefined || data.functionName === '') {
+        return setError("Please select function and upload file, Don't leave them empty!");
       }
+      const result = await axios.post(`${url}api/function`, data, {
+        cancelToken: cancelTokenSource.token
+      });
+      setResponse(result);
+    } catch (error) {
+      if (error.response) {
+        setError(error.message);
+      } else if (!error.response) {
+        setError('Connection refused');
+      } else setError(error);
+    } finally {
       setIsLoading(false);
-
+    }
   };
+
+  // setIsLoading(true);
+
+  //   const result = await qfuntion(data, cancelTokenSource);
+  //   console.log(result);
+  //   if (result.status !== 200) {
+  //     setError(result.statusText);
+  //   } else if (result.data === null) {
+  //     setError('Null, the server didnt send anything');
+  //   } else {
+  //     setResponse(result);
+  //   }
+  //   setIsLoading(false);
 
   const abortConnection = () => {
     cancelTokenSource.cancel();
-  }
+    
+  };
 
   return (
     <div className="App scrollbar-none flex flex-col font-sans mx-auto p-5 md:p-0 ">
@@ -58,18 +76,19 @@ const Home = () => {
 
         <SendFunction killServer={abortConnection} handleClick={submitFile} isDisabled={isDisabled} isLoading={isLoading} />
       </div>
-      {error && (
-        <ResponseCard>
-          <div>
-            <MyAlert type="error" color="error" message={error} />
-          </div>
-        </ResponseCard>
-      )}
 
       {response && (
         <ResponseCard>
           <div>
-            <MyAlert type="success" color="info" message={response.status === 200 && 'File has been created'} />
+            <MyAlert type="success" color="info" message={response.status === 200 && 'File has been created' + ' - ' + response.data.fileName} />
+          </div>
+        </ResponseCard>
+      )}
+
+      {error && (
+        <ResponseCard>
+          <div>
+            <MyAlert type="error" color="error" message={error} />
           </div>
         </ResponseCard>
       )}

@@ -13,7 +13,11 @@ const SelectFunction = (props) => {
             <MenuItem value="ea_non_iid">ea_non_iid</MenuItem>
             <MenuItem value="ea_iid">ea_iid</MenuItem>
             <MenuItem value="dieharder">dieharder</MenuItem>
-            <MenuItem value="testU01">testU01</MenuItem>
+            <MenuItem value="testU01-rabbit">testU01-rabbit</MenuItem>
+            <MenuItem value="testU01-alpha">testU01-alpha</MenuItem>
+            <MenuItem value="testU01-Bcrush">testU01-Bcrush</MenuItem>
+            <MenuItem value="testU01-crush">testU01-crush</MenuItem>
+            <MenuItem value="testU01-scrush">testU01-scrush</MenuItem>
           </Select>
         </FormControl>
       </Tooltip>
