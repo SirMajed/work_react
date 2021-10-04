@@ -31,7 +31,7 @@ const Home = () => {
     const result = await qfuntion(data);
     console.log(result);
     if (result.status !== 200) {
-      setError(result.status + ', ' + result.statusText);
+      setError(result.statusText);
     } else if (result.data === null) {
       setError('Null, the server didnt send anything');
     } else {
