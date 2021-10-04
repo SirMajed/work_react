@@ -22,7 +22,7 @@ const Home = () => {
   const { selectedFile, handleChange, isDisabled, disableBtn } = SelectFileHook();
 
   const cancelTokenSource = axios.CancelToken.source();
-  const submitFile = () => {
+  const submitFile = async () => {
 
     setIsLoading(true);
 
