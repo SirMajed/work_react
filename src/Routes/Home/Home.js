@@ -21,27 +21,34 @@ const Home = () => {
   const { selectedFunction, handleDropDown } = SelectFunctionHook();
   const { selectedFile, handleChange, isDisabled, disableBtn } = SelectFileHook();
 
-  const submitFile = async () => {
+  const cancelTokenSource = axios.CancelToken.source();
+  const submitFile = () => {
+
     setIsLoading(true);
+
     const data = {
       functionName: selectedFunction,
       fileName: selectedFile.name,
     };
 
-    const result = await qfuntion(data);
-    console.log(result);
-    if (result.status !== 200) {
-      setError(result.statusText);
-    } else if (result.data === null) {
-      setError('Null, the server didnt send anything');
-    } else {
-      setResponse(result);
-    }
-
-    setIsLoading(false);
-    disableBtn();
-
+    setTimeout(async () => {
+      const result = await qfuntion(data, cancelTokenSource);
+      console.log(result);
+      if (result.status !== 200) {
+        setError(result.statusText);
+      } else if (result.data === null) {
+        setError('Null, the server didnt send anything');
+      } else {
+        setResponse(result);
+      }
+      setIsLoading(false);
+    }, 4000);
   };
+
+  const abortConnection = () => {
+    alert('test');
+    cancelTokenSource.cancel();
+  }
 
   return (
     <div className="App scrollbar-none flex flex-col font-sans mx-auto p-5 md:p-0 ">
@@ -50,8 +57,7 @@ const Home = () => {
 
         <UploadFunction selectedFileName={selectedFile.name} handleChange={handleChange} />
 
-        <SendFunction handleClick={submitFile} isDisabled={isDisabled} isLoading={isLoading} />
-
+        <SendFunction killServer={abortConnection} handleClick={submitFile} isDisabled={isDisabled} isLoading={isLoading} />
       </div>
       {error && (
         <ResponseCard>
@@ -64,7 +70,7 @@ const Home = () => {
       {response && (
         <ResponseCard>
           <div>
-            <MyAlert type="success" color="info" message={response.status === 200 && "File has been created"} />
+            <MyAlert type="success" color="info" message={response.status === 200 && 'File has been created'} />
           </div>
         </ResponseCard>
       )}
