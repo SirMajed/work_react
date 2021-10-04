@@ -10,10 +10,10 @@ const SendFunction = (props) => {
         {props.isLoading ? (
           <div className="space-y-8">
             <LinearProgress />
-            <Button className="" variant="contained" color="primary" startIcon={<CancelIcon />} onClick={props.killServer}>
+            {/* <Button className="" variant="contained" color="primary" startIcon={<CancelIcon />} onClick={props.killServer}>
               Cancel request
               
-            </Button>
+            </Button> */}
           </div>
         ) : (
           <Tooltip placement="right" title="Send the function file to the server and wait for the response">

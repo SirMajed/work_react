@@ -6,18 +6,18 @@ import UploadFunction from './Components/UploadFunction';
 import SendFunction from './Components/SendFunction';
 import SelectFunctionHook from './Components/SelectFunctionHook';
 import SelectFileHook from './Components/SelectFileHook';
-
+import { useHistory } from 'react-router';
 import axios from 'axios';
 
 const Home = () => {
+  const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState(undefined);
   const [error, setError] = useState('');
 
   const { selectedFunction, handleDropDown } = SelectFunctionHook();
-  const { selectedFile, handleChange, isDisabled } = SelectFileHook();
+  const { selectedFile, handleChange, isDisabled, disableBtn } = SelectFileHook();
 
-  const cancelTokenSource = axios.CancelToken.source();
   const url = process.env.REACT_APP_SERVER_ENDPOINT;
 
   const data = {
@@ -30,24 +30,23 @@ const Home = () => {
     setResponse(undefined);
     setIsLoading(true);
 
-    try {
-      if (data.fileName === undefined || data.functionName === '') {
-        return setError("Please select function and upload file, Don't leave them empty!");
+      try {
+        if (data.fileName === undefined || data.functionName === '') {
+          return setError("Please select function and upload file, Don't leave them empty!");
+        }
+        const result = await axios.post(`${url}api/function`, data);
+        setResponse(result);
+      } catch (error) {
+        if (error.response) {
+          setError(error.message);
+        } else if (!error.response) {
+          setError('Connection refused');
+        } else setError(error);
+      } finally {
+        setIsLoading(false);
       }
-      const result = await axios.post(`${url}api/function`, data, {
-        cancelToken: cancelTokenSource.token
-      });
-      setResponse(result);
-    } catch (error) {
-      if (error.response) {
-        setError(error.message);
-      } else if (!error.response) {
-        setError('Connection refused');
-      } else setError(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+
+    };
 
   // setIsLoading(true);
 
@@ -63,7 +62,7 @@ const Home = () => {
   //   setIsLoading(false);
 
   const abortConnection = () => {
-    cancelTokenSource.cancel();
+    history.go(0);
     
   };
 
