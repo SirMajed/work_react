@@ -31,7 +31,7 @@ const Home = () => {
       fileName: selectedFile.name,
     };
 
-    setTimeout(async () => {
+
       const result = await qfuntion(data, cancelTokenSource);
       console.log(result);
       if (result.status !== 200) {
@@ -42,11 +42,10 @@ const Home = () => {
         setResponse(result);
       }
       setIsLoading(false);
-    }, 4000);
+
   };
 
   const abortConnection = () => {
-    alert('test');
     cancelTokenSource.cancel();
   }
 
