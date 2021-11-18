@@ -18,7 +18,6 @@ const Home = () => {
   const { selectedFile, handleChange, isDisabled, disableBtn } = SelectFileHook();
 
   const url = process.env.REACT_APP_SERVER_ENDPOINT;
- 
 
   const submitFile = async () => {
     let data = {
@@ -34,10 +33,11 @@ const Home = () => {
         return setError("Please select function and upload file, Don't leave them empty!");
       }
       const result = await axios.post(`${url}api/function`, data);
+
       setResponse(result);
     } catch (error) {
       if (error.response) {
-        setError(error.message);
+        setError(error.response.data);
       } else if (!error.response) {
         setError('Connection refused');
       } else setError(error);
@@ -46,7 +46,7 @@ const Home = () => {
     }
   };
 
-  const handleAllFunctions = async() => {
+  const handleAllFunctions = async () => {
     let data = {
       functionName: 'all',
       fileName: selectedFile.name,
@@ -61,8 +61,12 @@ const Home = () => {
         return setError("Please select function and upload file, Don't leave them empty!");
       }
       const result = await axios.post(`${url}api/function`, data);
+
       setResponse(result);
+      console.log(response);
     } catch (error) {
+      console.log(error);
+
       if (error.response) {
         setError(error.message);
       } else if (!error.response) {
@@ -71,7 +75,7 @@ const Home = () => {
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   const abortConnection = () => {
     history.go(0);
