@@ -14,7 +14,7 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState(undefined);
   const [error, setError] = useState('');
-
+  const [processing, setProcessing] = useState(false);
   const { selectedFunction, handleDropDown } = SelectFunctionHook();
   const { selectedFile, handleChange, isDisabled, disableBtn } = SelectFileHook();
 
@@ -30,23 +30,24 @@ const Home = () => {
     setResponse(undefined);
     setIsLoading(true);
 
-      try {
-        if (data.fileName === undefined || data.functionName === '') {
-          return setError("Please select function and upload file, Don't leave them empty!");
-        }
-        const result = await axios.post(`${url}api/function`, data);
-        setResponse(result);
-      } catch (error) {
-        if (error.response) {
-          setError(error.message);
-        } else if (!error.response) {
-          setError('Connection refused');
-        } else setError(error);
-      } finally {
-        setIsLoading(false);
+    try {
+      if (data.fileName === undefined || data.functionName === '') {
+        return setError("Please select function and upload file, Don't leave them empty!");
       }
-
-    };
+      const result = await axios.post(`${url}api/function`, data);
+      setProcessing(true);
+      setResponse(result);
+    } catch (error) {
+      if (error.response) {
+        setError(error.message);
+      } else if (!error.response) {
+        setError('Connection refused');
+      } else setError(error);
+    } finally {
+      setIsLoading(false);
+      setProcessing(false)
+    }
+  };
 
   // setIsLoading(true);
 
@@ -63,7 +64,6 @@ const Home = () => {
 
   const abortConnection = () => {
     history.go(0);
-    
   };
 
   return (
@@ -73,7 +73,7 @@ const Home = () => {
 
         <UploadFunction selectedFileName={selectedFile.name} handleChange={handleChange} />
 
-        <SendFunction killServer={abortConnection} handleClick={submitFile} isDisabled={isDisabled} isLoading={isLoading} />
+        <SendFunction processing={processing} killServer={abortConnection} handleClick={submitFile} isDisabled={isDisabled} isLoading={isLoading} />
       </div>
 
       {response && (
