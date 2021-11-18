@@ -14,7 +14,6 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState(undefined);
   const [error, setError] = useState('');
-  const [processing, setProcessing] = useState(false);
   const { selectedFunction, handleDropDown } = SelectFunctionHook();
   const { selectedFile, handleChange, isDisabled, disableBtn } = SelectFileHook();
 
@@ -35,7 +34,6 @@ const Home = () => {
         return setError("Please select function and upload file, Don't leave them empty!");
       }
       const result = await axios.post(`${url}api/function`, data);
-      setProcessing(true);
       setResponse(result);
     } catch (error) {
       if (error.response) {
@@ -45,22 +43,8 @@ const Home = () => {
       } else setError(error);
     } finally {
       setIsLoading(false);
-      setProcessing(false)
     }
   };
-
-  // setIsLoading(true);
-
-  //   const result = await qfuntion(data, cancelTokenSource);
-  //   console.log(result);
-  //   if (result.status !== 200) {
-  //     setError(result.statusText);
-  //   } else if (result.data === null) {
-  //     setError('Null, the server didnt send anything');
-  //   } else {
-  //     setResponse(result);
-  //   }
-  //   setIsLoading(false);
 
   const abortConnection = () => {
     history.go(0);
@@ -73,7 +57,7 @@ const Home = () => {
 
         <UploadFunction selectedFileName={selectedFile.name} handleChange={handleChange} />
 
-        <SendFunction processing={processing} killServer={abortConnection} handleClick={submitFile} isDisabled={isDisabled} isLoading={isLoading} />
+        <SendFunction killServer={abortConnection} handleClick={submitFile} isDisabled={isDisabled} isLoading={isLoading} />
       </div>
 
       {response && (
