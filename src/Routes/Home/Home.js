@@ -90,7 +90,8 @@ const Home = () => {
       {response && (
         <ResponseCard>
           <div>
-            <MyAlert type="success" color="info" message={response.status === 200 && 'File has been created' + ' - ' + response.data.fileName} />
+            {/* <MyAlert type="success" color="info" message={response.status === 200 && 'File has been created' + ' - ' + response.data.fileName} /> */}
+            <MyAlert type="success" color="info" message={response.data} />
           </div>
         </ResponseCard>
       )}

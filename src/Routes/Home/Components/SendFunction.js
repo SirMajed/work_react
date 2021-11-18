@@ -18,7 +18,7 @@ const SendFunction = (props) => {
                 Run function
               </Button>
             </Tooltip>
-            <Tooltip placement="right" title="Send the function file to the server and wait for the response">
+            <Tooltip placement="right" title="Choose file and run all the functions">
               <Button startIcon={<SendIcon />} onClick={props.handleAllFunctions} disabled={props.isDisabled} variant="contained" color="primary" component="label">
                 Run All
               </Button>
